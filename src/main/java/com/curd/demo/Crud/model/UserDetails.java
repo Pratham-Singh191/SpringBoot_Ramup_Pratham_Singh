@@ -1,29 +1,36 @@
 package com.curd.demo.Crud.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 
 @Data
 @Embeddable
 public class UserDetails  {
-    enum MaritalStatus {
-        Married,
-        Single
-    }
-    enum Gender {
-        Male,
-        Female
-    }
 
+    @NotBlank
     private String first_name;
+    @NotBlank
     private String last_name;
+
+    @Size(min = 1, message = "Age must be greater than 0")
     private int age;
-    private Gender gender;
-    private MaritalStatus marital_status;
+
+    @NotBlank
+    @Pattern(regexp = "^(Male | Female)$")
+    private String gender;
+
+    @Pattern(regexp = "^(Married | Single)$")
+    @NotBlank
+    private String marital_status;
+
     @Embedded
+    @NotBlank
     private ResidentalDetails residential_details;
+
     @Embedded
     private OfficialDetails official_details;
 }

@@ -12,4 +12,7 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query( value = "select * from users where active is true", nativeQuery = true)
     List<User> getAllActiveUsers();
+
+    @Query(value = "select * from users where email = :email", nativeQuery = true)
+    User existsByEmail(@Param("email") String email);
 }
