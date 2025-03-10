@@ -1,5 +1,6 @@
 package com.curd.demo.Crud.model;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.core.GrantedAuthority;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
@@ -7,11 +8,15 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
 @Data
-public class User {
+public class User implements org.springframework.security.core.userdetails.UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -37,6 +42,18 @@ public class User {
 
     @Embedded
     private UserDetails user_details;
+
+    @ManyToMany
+    @JoinTable(
+            name = "connections",
+            joinColumns = @JoinColumn(name = "follower"),
+            inverseJoinColumns = @JoinColumn(name = "followee")
+    )
+    private Set<User> followers = new HashSet<>();
+
+    @ManyToMany(mappedBy = "followers")
+    private Set<User> following = new HashSet<>();
+
 
     @PrePersist
     private void prePersist(){
@@ -71,6 +88,48 @@ public class User {
 
     public LocalDateTime getLastModified() {
         return lastModified;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return getEmail();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return org.springframework.security.core.userdetails.UserDetails.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return org.springframework.security.core.userdetails.UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return org.springframework.security.core.userdetails.UserDetails.super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return org.springframework.security.core.userdetails.UserDetails.super.isEnabled();
+    }
+
+    public Set<User> getFollowers() {
+        return followers;
+    }
+
+    public Set<User> getFollowing() {
+        return following;
     }
 }
 

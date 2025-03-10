@@ -17,6 +17,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleUserNotFoundException(Exception exception){
         log.error(exception.getMessage());
+        System.out.println(exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponseBody(exception, HttpStatus.BAD_REQUEST));
     }
 }

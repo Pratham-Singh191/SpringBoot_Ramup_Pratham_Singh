@@ -1,4 +1,4 @@
-package com.curd.demo.Crud.controller.user;
+package com.curd.demo.Crud.controller;
 
 import lombok.Data;
 import org.springframework.http.HttpStatus;
